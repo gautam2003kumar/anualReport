@@ -18,7 +18,7 @@ app.use(express.static("public"))
 app.use(upload.none());
 
 // Change the cookie of browser from server (CRUD operation)
-app.use(cookieParser())
+app.use(cookieParser()); 
 
 
 //routes imports
