@@ -3,6 +3,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt  from "jsonwebtoken";
+import { generateOTP } from "../utils/otp.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 
 const generateAccessAndRefereshTokens = async(userId) =>{
@@ -30,11 +32,7 @@ const options = {
 
 const registerUser = asyncHandler(async (req, res) => {
     // Get user details from frontend
-    console.log("Request body:", req.body);
-
     const { fullName, email, username, password } = req.body;
-
-    console.log({ fullName, email, username, password });
 
     if (!fullName || !email || !username || !password) {
         throw new ApiError(400, "All fields are required");
@@ -202,9 +200,202 @@ const refreshAccessToken = asyncHandler(async (req, res) =>{
     }
 })
 
+const changeCurrentPassword = asyncHandler(async (req, res) =>{
+    const {oldPassword, newPassword, confirmPassword} = req.body
+
+    if(newPassword !== confirmPassword){
+        throw new ApiError(400, "Password doesn't match")
+    }
+
+    const user = await User.findById(req.user?._id)
+
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+    if(!isPasswordCorrect){
+        throw new ApiError(400, "Invalid passwword");
+    }
+
+    user.password = newPassword
+    await user.save({validateBeforeSave: false})
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200, 
+            {}, 
+            "Password changed successfully"
+        )
+    )
+
+})
+
+const getCurrentUser = asyncHandler(async(req, res)=>{
+    return res
+    .status(200)
+    .json(
+        200,
+        req.user,
+        "current user fetched sccessfully"
+    )
+})
+
+const updateAccountDetails = asyncHandler(async(req, res) => {
+    console.log("Received request to update account details");
+    console.log("Request body:", req.body);
+    console.log("Authenticated user ID:", req.user?._id);
+    const {fullName, email} = req.body
+
+
+    if (!fullName || !email) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                fullName,
+                email: email
+            }
+        },
+        {new: true, runValidators: true }
+        
+    ).select("-password")
+    console.log(user)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Account details updated successfully"))
+});
+
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email, username } = req.body;
+
+    if (!email && !username) {
+        throw new ApiError(400, "Email or username is required");
+    }
+
+    const user = await User.findOne({
+        $or: [{ username }, { email }]
+    });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const otp = generateOTP(); 
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiration
+
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+
+    await user.save({ validateBeforeSave: false });
+
+    await sendEmail(user.email, "OTP for Reset Password", `Your OTP is: ${otp}`);
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "OTP sent to your email")
+    );
+});
+
+
+const verifyOtp = asyncHandler(async (req, res) => {
+    const { otp, email } = req.body;
+
+    if (!otp || !email) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    if (!user.otp || (user.otpExpires && user.otpExpires.getTime() < Date.now()) || user.otp !== otp) {
+        throw new ApiError(400, "Invalid or expired OTP");
+    }
+
+    // Remove OTP after successful verification
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    const tokens = await generateAccessAndRefereshTokens(user._id);
+    const accessToken = await tokens.accessToken;
+    const refreshToken = await tokens.refreshToken;
+
+    if(!accessToken || !refreshToken){
+        throw new ApiError(404, "Something went wrong while generating access and refresh token");
+    }
+
+
+    return res
+    .status(200)
+    .cookie("accessToken",accessToken, options)
+    .cookie("refreshToken",refreshToken, options)
+    .json(
+        new ApiResponse(
+            200,
+            {accessToken, refreshToken},
+            "OTP verified successfully!"
+        )
+    );
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+
+    const { newPassword, confirmPassword } = req.body;
+    const incomingRefreshtoken = req.cookies.refreshToken;
+
+    if (!incomingRefreshtoken || !newPassword || !confirmPassword) {
+        throw new ApiError(400, "Token and password are required");
+    }
+
+    if (newPassword !== confirmPassword) {
+        throw new ApiError(400, "Passwords do not match");
+    }
+
+    try {
+        const decodedToken = jwt.verify(
+            incomingRefreshtoken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
+
+        const user = await User.findById(decodedToken._id);
+
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+
+        user.password = newPassword;
+        await user.save({ validateBeforeSave: false });
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {},
+                "Password changed successfully"
+            )
+        );
+
+    } catch (error) {
+        console.error("Reset password error:", error);
+        throw new ApiError(401, "Invalid or expired refresh token");
+    }
+});
+
+
 export { 
     registerUser,
     loginUser,
     logoutUser,
-    refreshAccessToken
+    refreshAccessToken,
+    changeCurrentPassword,
+    getCurrentUser,
+    updateAccountDetails,
+    forgotPassword,
+    verifyOtp,
+    resetPassword
 };
