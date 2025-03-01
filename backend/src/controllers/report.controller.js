@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOncloudinary } from "../utils/cloudinary.js";
+import { uploadOncloudinary, extractPublicIdFromUrl, deleteFromCloudinary} from "../utils/cloudinary.js";
 import { Report } from "../models/report.model.js";
 import fs from "fs";
 
@@ -24,10 +24,10 @@ const getAllReport = asyncHandler(async (req, res, next) => {
     }
 });
 
-
 const publishReport = asyncHandler(async (req, res, next) => {
     try {
         const { session } = req.body;
+        console.log("Session:", session);
         
         if (!session) {
             return next(new ApiError(400, "Session is required"));
@@ -128,11 +128,10 @@ const updateReport = asyncHandler(async (req, res, next) => {
     }
 });
 
-
 const deleteReport = asyncHandler(async (req, res, next) => {
     try {
-        const { reportId } = req.params; // Extract report ID
-
+        const { reportId } = req.params; 
+          
         // Find the existing report
         const report = await Report.findById(reportId);
         if (!report) {
@@ -158,10 +157,9 @@ const deleteReport = asyncHandler(async (req, res, next) => {
     }
 });
 
-
 export{
     getAllReport,
     publishReport,
     updateReport,
-    deleteReport
+    deleteReport,
 }

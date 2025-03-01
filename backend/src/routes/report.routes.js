@@ -1,23 +1,28 @@
 import { Router } from "express";
-const router = Router();
 import { isAdmin, verifyJWT } from "../middlewares/auth.middlewares.js";
-import { upload } from "../middlewares/multer.middleware.js";
+import {upload} from "../middlewares/multer.middleware.js";
 import {
     getAllReport,
     publishReport,
     updateReport,
-    deleteReport
+    deleteReport,
 } from "../controllers/report.controller.js";
 
+const router = Router();
 router.use(verifyJWT);
 
 router
-    .route("/publishReport")  // Change the route to /publishReport
+    .route("/publishReport")
     .post(
         isAdmin,
-        upload.fields([{ name: "reportFile", maxCount: 1 }]),
+        upload.fields([
+            { name: "reportFile", maxCount: 1 },
+        ]),
         publishReport
     );
+
+router.route("/").get(getAllReport);
+
 
 router
     .route("/:reportId")
