@@ -95,4 +95,8 @@ const Login = () => {
   );
 };
 
+<<<<<<< HEAD
 export { Login };
+=======
+export { Login };
+>>>>>>> 6739c4252e15f7ac50cb81a5f6901b66dd4362af
