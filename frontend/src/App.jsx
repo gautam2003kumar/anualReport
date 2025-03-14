@@ -1,4 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+//import {HomePage} from "./pages/Home.jsx";
+import {Login} from "./pages/Login.jsx";
+import {Signup} from "./pages/Register.jsx";
+
 
 const HomePage = () => {
   return (
@@ -9,6 +13,8 @@ const HomePage = () => {
         <Link to="/about" className="px-6 py-3 bg-blue-500 rounded-lg text-white font-bold hover:bg-blue-600">About Us</Link>
         <Link to="/impact" className="px-6 py-3 bg-green-500 rounded-lg text-white font-bold hover:bg-green-600">Our Impact</Link>
         <Link to="/campaigns" className="px-6 py-3 bg-purple-500 rounded-lg text-white font-bold hover:bg-purple-600">Campaigns</Link>
+        <Link to ="/login" className="px-6 py-3 bg-blue-300 rounded-lg text-white font-bold hover:bg-red-600">Login</Link>
+        <Link to ="/signup" className="px-6 py-3 bg-blue-300 rounded-lg text-white font-bold hover:bg-red-600">Signup</Link>
       </div>
     </div>
   );
@@ -29,6 +35,8 @@ const NGOApp = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/impact" element={<ImpactPage />} />
         <Route path="/campaigns" element={<CampaignsPage />} />
         <Route path="/help" element={<HelpPage />} />
