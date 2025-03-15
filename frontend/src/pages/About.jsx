@@ -1,52 +1,71 @@
-const AboutPage = () => {
+import React from "react";
+
+const About = () => {
   return (
-    <div className="p-10 bg-gray-100 text-center">
-      <h1 className="text-5xl font-extrabold text-blue-700">About Daya Society</h1>
-      <p className="text-xl text-gray-700 mt-4 max-w-3xl mx-auto">
-        Daya Society is a non-profit organization committed to transforming lives through sustainable development initiatives.
-        Our focus areas include healthcare, livelihood support, women empowerment, child development, disaster management,
-        and environmental conservation.
+    <>
+    <div className="min-h-screen bg-green-100 flex flex-col items-center justify-center px-6 py-12">
+      {/* Main Title */}
+      <h1 className="text-4xl font-bold text-green-700 mb-6">📌 About Daya Society</h1>
+      <p className="text-lg text-gray-700 text-center max-w-4xl">
+        Daya Society is a non-profit organization dedicated to creating a sustainable and equitable world. 
+        We empower underprivileged communities by providing access to healthcare, livelihood support, education, 
+        and environmental conservation initiatives. Since 2004, we have been at the forefront of social change, ensuring 
+        that no one is left behind in the journey toward a better future.
       </p>
 
-      <div className="mt-8 text-left bg-white p-8 rounded-lg shadow-lg max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold text-green-700">Our Mission</h2>
-        <p className="text-gray-700 mt-2">
-          We strive to uplift underprivileged communities by providing essential services and resources. By addressing
-          key social challenges, we aim to create a self-sufficient and empowered society.
-        </p>
-
-        <h2 className="text-3xl font-bold mt-6 text-purple-700">Our Impact</h2>
-        <p className="text-gray-700 mt-2">
-          Since our inception in 2004, we have positively impacted over <span className="font-bold">5,000 lives</span>.
-          Our healthcare programs have facilitated better medical access, while our livelihood projects support over <span className="font-bold">4,200 rural farmers</span>.
-          Through self-help groups, <span className="font-bold">600+ women</span> have gained financial independence.
-        </p>
-
-        <h2 className="text-3xl font-bold mt-6 text-blue-700">How You Can Help</h2>
-        <p className="text-gray-700 mt-2">
-          Real change happens when people come together. You can support our cause by volunteering, donating, or spreading awareness.
-          Every effort counts in making a difference.
-        </p>
+      {/* Mission Section */}
+      <div className="mt-10 bg-white shadow-md p-6 rounded-lg max-w-4xl text-center">
+        <h2 className="text-2xl font-semibold text-green-600 mb-4">🎯 Our Mission</h2>
+        <ul className="text-gray-700 list-disc list-inside text-left">
+          <li>✔ Providing quality healthcare services to those in need</li>
+          <li>✔ Encouraging self-sufficiency through livelihood programs</li>
+          <li>✔ Supporting child development and education</li>
+          <li>✔ Empowering women through financial independence</li>
+          <li>✔ Responding to natural disasters with timely relief efforts</li>
+          <li>✔ Protecting the environment through tree plantations and conservation programs</li>
+        </ul>
       </div>
 
-      <div className="mt-8 bg-blue-100 p-6 rounded-lg shadow-lg max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold text-blue-700">Get in Touch</h2>
-        <p className="text-gray-700 mt-2">
-          <span className="font-semibold">Arpan Kumar, Secretary</span> <br />
-          Daya Foundation <br />
-          268A, Madhopur, Basudeopur, Munger
+      {/* Impact Section */}
+      <div className="mt-10 bg-white shadow-md p-6 rounded-lg max-w-4xl text-center">
+        <h2 className="text-2xl font-semibold text-green-600 mb-4">🌱 Our Impact</h2>
+        <ul className="text-gray-700 list-disc list-inside text-left">
+          <li>📌 <strong>Healthcare Support:</strong> Over <span className="text-green-600 font-bold">10,000 people</span> have benefited from our free medical camps and health awareness programs.</li>
+          <li>📌 <strong>Livelihood Programs:</strong> Skill training for <span className="text-green-600 font-bold">5,000+ individuals</span>, helping them become financially independent.</li>
+          <li>📌 <strong>Women Empowerment:</strong> More than <span className="text-green-600 font-bold">800 women</span> have started small businesses with our micro-financing initiatives.</li>
+          <li>📌 <strong>Environmental Conservation:</strong> Planted over <span className="text-green-600 font-bold">50,000 trees</span> and cleaned up polluted areas in multiple cities.</li>
+          <li>📌 <strong>Disaster Relief:</strong> Delivered essential aid to <span className="text-green-600 font-bold">20,000 disaster-affected families</span> during floods, earthquakes, and pandemics.</li>
+        </ul>
+      </div>
+
+      {/* How You Can Help Section */}
+      <div className="mt-10 bg-white shadow-md p-6 rounded-lg max-w-4xl text-center">
+        <h2 className="text-2xl font-semibold text-green-600 mb-4">🤝 How You Can Help</h2>
+        <p className="text-gray-700 mb-4">
+          You can be a part of this transformative journey in the following ways:
         </p>
-        <p className="text-gray-700 mt-2">
-          Email: <a href="mailto:mdayasociety@gmail.com" className="text-blue-500">mdayasociety@gmail.com</a>, 
-          <a href="mailto:kumararpan74@gmail.com" className="text-blue-500"> kumararpan74@gmail.com</a>
+        <ul className="text-gray-700 list-disc list-inside text-left">
+          <li>🔹 <strong>Volunteer</strong> – Join us in various community-driven initiatives.</li>
+          <li>🔹 <strong>Donate</strong> – Every contribution helps us reach more people in need.</li>
+          <li>🔹 <strong>Spread Awareness</strong> – Share our mission and inspire more changemakers.</li>
+          <li>🔹 <strong>Corporate Partnerships</strong> – Organizations can collaborate for CSR initiatives.</li>
+        </ul>
+      </div>
+
+      {/* Join Us Section */}
+      <div className="mt-10 bg-green-700 text-white shadow-md p-6 rounded-lg max-w-4xl text-center">
+        <h2 className="text-2xl font-semibold mb-4">📢 Join Us Today!</h2>
+        <p className="mb-4">
+          At <span className="font-bold">Daya Society</span>, we believe that small efforts create big impacts. 
+          Together, we can build a more inclusive and sustainable future for all.
         </p>
-        <p className="text-gray-700 mt-2">
-          Mobile: <a href="tel:7004176432" className="text-blue-500">7004176432</a>, 
-          <a href="tel:9431418843" className="text-blue-500"> 9431418843</a>
-        </p>
+        <button className="bg-white text-green-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
+          Contact Us
+        </button>
       </div>
     </div>
+    </>
   );
 };
 
-export { AboutPage };
+export  default About;
