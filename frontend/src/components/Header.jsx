@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import logoimg from "../assets/logoimg.jpg"
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -50,7 +51,8 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   return (
     <header className="bg-green-800 text-white p-4 flex items-center justify-between">
       <div className="flex items-center space-x-2">
-        <h1 className="text-xl font-bold">🌿 Daya Society</h1>
+        <img src={logoimg} alt="tlogo" className="h-10 justify-between" />
+        <h1 className="text-xl font-bold">Daya Society</h1>
       </div>
 
       <nav>

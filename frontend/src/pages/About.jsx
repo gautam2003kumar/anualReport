@@ -3,7 +3,7 @@ import React from "react";
 const About = () => {
   return (
     <>
-    <div className="min-h-screen bg-green-100 flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-green-200 flex flex-col items-center justify-center px-6 py-12">
       {/* Main Title */}
       <h1 className="text-4xl font-bold text-green-700 mb-6">📌 About Daya Society</h1>
       <p className="text-lg text-gray-700 text-center max-w-4xl">

@@ -2,7 +2,7 @@ import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
 const Contact = () => {
   return (
-    <div className="bg-green-50 min-h-screen flex items-center justify-center px-4">
+    <div className="bg-green-200 min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-3xl bg-white p-10 rounded-xl shadow-lg border border-green-300">
         <h2 className="text-4xl font-bold text-green-600 text-center mb-6">Contact Us</h2>
         <p className="text-center text-lg text-gray-600 mb-6">

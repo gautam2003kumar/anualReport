@@ -29,7 +29,7 @@ const ReportsPage = ({ user }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-green-200 p-6">
       <h2 className="text-3xl font-bold mb-6">Annual Reports</h2>
 
       <div className="w-full max-w-3xl space-y-4">
@@ -40,7 +40,7 @@ const ReportsPage = ({ user }) => {
             <div key={report._id} className="bg-white shadow-md p-4 rounded-lg flex justify-between items-center">
               <div>
                 <p className="text-lg font-semibold">Session: {report.session}</p>
-                <p className="text-sm text-gray-500">Views: {report.views}</p>
+                {/*<p className="text-sm text-gray-500">Views: {report.views}</p> */}
               </div>
               
               <div className="flex space-x-3">
