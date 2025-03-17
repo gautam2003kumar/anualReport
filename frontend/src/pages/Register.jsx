@@ -1,122 +1,120 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Log form values before making the request
-    console.log("Full Name:", fullName);
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
-  
+    setLoading(true);
+
+    if (!fullName || !username || !email || !password) {
+      toast.error("All fields are required!", { position: "top-center" });
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Make the POST request to the backend
-      const response = await axios.post("/api/v1/users/register", {
-        fullName,
-        username,
-        email,
-        password,
-      });
-  
-      // Log the response data
-      console.log("Signup Response Data:", response.data);
-  
-      // Set success message from the response
-      setMessage(response.data.message);  
-      setError("");  // Clear any previous errors
-  
-      // Show modal popup
-      setIsModalOpen(true);
-  
-      // Log success
-      console.log("Signup successful:", response);
-  
-      // Redirect to login page after 2 seconds
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-      
-    } catch (error) {
-      // Clear message on error
-      setMessage("");  
-  
-      // Log error and set error message
-      if (error.response) {
-        console.error("Signup Error Response:", error.response);
-        setError(error.response.data.message || "An error occurred");
-      } else {
-        setError("An error occurred. Please try again.");
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/register",
+        { fullName, username, email, password }
+      );
+
+      if (response.data.success) {
+        toast.success("Account created successfully! Redirecting to login...", { autoClose: 2000 });
+        setTimeout(() => navigate("/login"), 2000);
       }
-      console.error("Error during signup:", error);
+    } catch (error) {
+      if (error.response?.data?.message?.includes("already exists")) {
+        toast.error("Account already exists. Please login.", { autoClose: 2000 });
+      } else {
+        toast.error(error.response?.data?.message || "Something went wrong!");
+      }
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form className="bg-white p-6 rounded-lg shadow-lg flex flex-col gap-4 w-80" onSubmit={handleSubmit}>
-        <h2 className="text-center text-2xl font-bold">Signup</h2>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
-          required
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-          Signup
-        </button>
-      </form>
-
-      {/* Modal Popup to show success or error message */}
-      {isModalOpen && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            {message && <p className="text-green-500">{message}</p>} {/* Success message */}
-            {error && <p className="text-red-500">{error}</p>} {/* Error message */}
+    <div className="flex items-center justify-center min-h-screen bg-green-100">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-800">Create an Account</h2>
+        <form onSubmit={handleSubmit} className="mt-4">
+          <div className="mb-4">
+            <label className="block text-gray-700">Full Name</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-green-400"
+              placeholder="Enter your full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
           </div>
-        </div>
-      )}
+
+          <div className="mb-4">
+            <label className="block text-gray-700">Username</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-green-400"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700">Email</label>
+            <input
+              type="email"
+              className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-green-400"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700">Password</label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-green-400"
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full px-4 py-2 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600"
+            disabled={loading}
+          >
+            {loading ? "Creating Account..." : "Sign Up"}
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-gray-600">
+          Already have an account?{" "}
+          <span className="text-green-500 cursor-pointer" onClick={() => navigate("/login")}>
+            Log in
+          </span>
+        </p>
+      </div>
+      <ToastContainer />
     </div>
   );
 };
 
-export { Signup };
+export default Signup;

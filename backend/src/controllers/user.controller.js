@@ -26,7 +26,7 @@ const generateAccessAndRefereshTokens = async(userId) =>{
 
 const options = {
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: "Strict"
 }
 
@@ -156,6 +156,16 @@ const logoutUser = asyncHandler( async(req, res) =>{
     )
 })
 
+const checkAuth = asyncHandler(async(req, res) =>{
+    const accessToken = req.cookies.accessToken;
+
+    if(accessToken){
+        res.json({isAuthenticated: true});
+    }else{
+        res.json({isAuthenticated: false});
+    }
+});
+
 const refreshAccessToken = asyncHandler(async (req, res) =>{
     const incomingRefreshtoken = req.cookie.refreshToken || req.body.refreshToken
 
@@ -230,15 +240,18 @@ const changeCurrentPassword = asyncHandler(async (req, res) =>{
 
 })
 
-const getCurrentUser = asyncHandler(async(req, res)=>{
+const getCurrentUser = asyncHandler(async (req, res) => {
     return res
-    .status(200)
-    .json(
-        200,
-        req.user,
-        "current user fetched sccessfully"
-    )
-})
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                req.user,
+                "User fetched successfully"
+            )
+        );
+});
+
 
 const updateAccountDetails = asyncHandler(async(req, res) => {
     console.log("Received request to update account details");
@@ -393,6 +406,7 @@ export {
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
+    checkAuth,
     getCurrentUser,
     updateAccountDetails,
     forgotPassword,

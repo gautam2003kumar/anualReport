@@ -1,49 +1,46 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); 
-  const [message, setMessage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    setLoading(true);
 
     try {
-      const response = await axios.post("/api/v1/users/login", {
-        email,
-        password,
-      });
-      
-      setMessage(response.data.message);
-      setError("");
-      setIsModalOpen(true);
-      console.log("Login successful:", response);
+      const response = await axios.post(
+        "/api/v1/users/login",
+        { email, password },
+        { withCredentials: true }
+      );
 
-      setTimeout(() => {
-        setIsModalOpen(false);
-        navigate("/");
+      if (response.status === 200) {
+        setIsLoggedIn(true);
+        toast.success("Login successful!", { position: "bottom-left", autoClose: 2000 });
+
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       }
-      , 2000);  
     } catch (error) {
-      setMessage("");
-      if (error.response) {
-        setError(error.response.data.message || "An error occurred");
-      } else {
-        setError("An error occurred. Please try again.");
-      }
-      console.error("Error during login:", error);
+      toast.error(error.response?.data?.message || "An error occurred. Please try again.", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-green-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
         <form onSubmit={handleSubmit} className="mt-4">
@@ -51,48 +48,55 @@ const Login = () => {
             <label className="block text-gray-700">Email</label>
             <input
               type="email"
-              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Password</label>
             <input
               type="password"
-              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
+
+          {/* ✅ Forgot Password and Sign Up Links */}
+          <div className="flex justify-between text-sm text-gray-600 mb-4">
+            <Link to="/forgot-password" className="hover:text-green-500">
+              Forgot Password?
+            </Link>
+            <Link to="/signup" className="hover:text-green-500">
+              Create an Account
+            </Link>
+          </div>
+
           <button
             type="submit"
-            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+            className="w-full px-4 py-2 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 flex items-center justify-center"
+            disabled={loading}
           >
-            Login
+            {loading ? (
+              <span className="animate-spin border-t-2 border-white border-solid rounded-full w-5 h-5 mr-2"></span>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
-
-        {/* Display success or error messages */}
-        {message && <p className="mt-4 text-green-500">{message}</p>}
-        {error && <p className="mt-4 text-red-500">{error}</p>}
-
-        {/* Modal Pop-up after successful login */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-xl font-bold">Login Successful!</h3>
-              <p className="mt-2">Redirecting to Home...</p>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* ✅ Toast notifications */}
+      <ToastContainer />
     </div>
   );
 };
 
-export { Login };
+export default Login;

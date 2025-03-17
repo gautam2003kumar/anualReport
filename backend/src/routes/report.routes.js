@@ -9,8 +9,11 @@ import {
 } from "../controllers/report.controller.js";
 
 const router = Router();
-router.use(verifyJWT);
 
+router.route("/").get(getAllReport);
+
+//secure routes
+router.use(verifyJWT);
 router
     .route("/publishReport")
     .post(
@@ -20,9 +23,6 @@ router
         ]),
         publishReport
     );
-
-router.route("/").get(getAllReport);
-
 
 router
     .route("/:reportId")
