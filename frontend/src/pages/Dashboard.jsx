@@ -35,7 +35,7 @@ const Dashboard = () => {
 
         <div className="absolute inset-0 bg-green-900 opacity-60"></div>
         <div className="relative z-10">
-          <h1 className="text-4xl font-bold text-white">Helping People, Changing Lives</h1>
+          <h1 className="text-4xl font-bold text-white">Helping People, Changing Lifes</h1>
           <p className="text-lg text-white mt-4 max-w-2xl">
             We are dedicated to making the world a better place through tree plantation, blood donation, and community service.
           </p>
